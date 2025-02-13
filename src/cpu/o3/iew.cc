@@ -57,6 +57,7 @@
 #include "debug/IEW.hh"
 #include "debug/O3PipeView.hh"
 #include "params/BaseO3CPU.hh"
+#include "debug/HW2.hh"
 
 namespace gem5
 {
@@ -869,6 +870,11 @@ IEW::dispatchInsts(ThreadID tid)
         DPRINTF(IEW, "[tid:%i] Issue: Adding PC %s [sn:%lli] [tid:%i] to "
                 "IQ.\n",
                 tid, inst->pcState(), inst->seqNum, inst->threadNumber);
+
+        if(inst->isMagic()) {
+            DPRINTF(HW2, "Magic instruction dispatched at cycle %lu [tid:%i, sn:%llu]\n",
+                    curTick(), tid, inst->seqNum);
+        }
 
         // Be sure to mark these instructions as ready so that the
         // commit stage can go ahead and execute them, and mark

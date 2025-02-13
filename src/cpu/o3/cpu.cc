@@ -60,6 +60,8 @@
 #include "sim/process.hh"
 #include "sim/stat_control.hh"
 #include "sim/system.hh"
+#include "debug/HW2.hh"
+#include "debug/Magic.hh"
 
 namespace gem5
 {
@@ -1475,6 +1477,28 @@ CPU::htmSendAbortSignal(ThreadID tid, uint64_t htm_uid,
     if (!iew.ldstQueue.getDataPort().sendTimingReq(abort_pkt)) {
         panic("HTM abort signal was not sent to the memory subsystem.");
     }
+}
+
+void
+CPU::getProfilingStats(ThreadID tid) const 
+{ 
+    double idle_cycles = cpuStats.idleCycles.value();
+    double total_cycles = baseStats.numCycles.value();
+    double total_insts = baseStats.numInsts.value();
+
+    double ipc = (total_cycles > 0) ? (total_insts / total_cycles) : 0.0;
+    double idle_rate = (total_cycles > 0) ? (idle_cycles / total_cycles) : 0.0;
+
+    double branchMispreds = commit.getBranchMispredictsFromCommit();
+    double branchPreds = fetch.getpredictedBranchesFromFetch();
+    double mpki = (total_insts > 0) ? ((double)branchMispreds / total_insts) * 1000.0 : 0.0;
+    double pred_acc = (branchPreds > 0) ? (1.0 - (branchMispreds / branchPreds)) : 0.0;
+
+    double blockCycles = iew.getblockCyclesFromIEW();
+    double stall_rate = (total_cycles > 0) ? (blockCycles / total_cycles) : 0.0;
+
+    DPRINTF(Magic, "\nMagic Profiler: \n> IPC=%f \n> Idle Rate=%f \n> Stall Rate=%f \n> MPKI=%f \n> Predictor Accuracy=%f\n\n", 
+        ipc, idle_rate, stall_rate, mpki, pred_acc);
 }
 
 } // namespace o3

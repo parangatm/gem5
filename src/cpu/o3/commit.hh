@@ -491,6 +491,9 @@ class Commit
         /** Number of cycles where the commit bandwidth limit is reached. */
         statistics::Scalar commitEligibleSamples;
     } stats;
+
+  public:
+    double getBranchMispredictsFromCommit() const { return stats.branchMispredicts.result(); }
 };
 
 } // namespace o3

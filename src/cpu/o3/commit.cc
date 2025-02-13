@@ -66,6 +66,7 @@
 #include "params/BaseO3CPU.hh"
 #include "sim/faults.hh"
 #include "sim/full_system.hh"
+#include "debug/HW2.hh"
 
 namespace gem5
 {
@@ -1004,6 +1005,12 @@ Commit::commitInsts()
                 // update nesting depth
                 if (head_inst->isHtmStop())
                     htmStops[tid]++;
+
+
+                if (head_inst->isMagic()) {
+                    DPRINTF(HW2, "Magic instruction committed at cycle %lu\n", curTick());
+                    cpu->getProfilingStats(tid);
+                }
 
                 changedROBNumEntries[tid] = true;
 

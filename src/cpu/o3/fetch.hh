@@ -579,6 +579,9 @@ class Fetch
         /** Rate of how often fetch was idle. */
         statistics::Formula idleRate;
     } fetchStats;
+
+    public:
+      double getpredictedBranchesFromFetch() const { return fetchStats.predictedBranches.value(); }
 };
 
 } // namespace o3

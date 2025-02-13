@@ -51,6 +51,7 @@
 #include "debug/O3PipeView.hh"
 #include "debug/Rename.hh"
 #include "params/BaseO3CPU.hh"
+#include "debug/HW2.hh"
 
 namespace gem5
 {
@@ -656,6 +657,11 @@ Rename::renameInsts(ThreadID tid)
                 "[tid:%i] "
                 "Processing instruction [sn:%llu] with PC %s.\n",
                 tid, inst->seqNum, inst->pcState());
+
+        if (inst->isMagic()) {
+            DPRINTF(HW2, "Magic instruction renamed at cycle %lu [tid:%i, sn:%llu]\n",
+                    curTick(), tid, inst->seqNum);
+        }
 
         // Check here to make sure there are enough destination registers
         // to rename to.  Otherwise block.

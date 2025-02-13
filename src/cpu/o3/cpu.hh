@@ -590,6 +590,10 @@ class CPU : public BaseCPU
     // hardware transactional memory
     void htmSendAbortSignal(ThreadID tid, uint64_t htm_uid,
                             HtmFailureFaultCause cause) override;
+
+    // Profiling stats
+    void getProfilingStats(ThreadID) const;
+
 };
 
 } // namespace o3

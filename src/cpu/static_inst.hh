@@ -195,6 +195,7 @@ class StaticInst : public RefCounted, public StaticInstFlags
     bool isHtmStart() const { return flags[IsHtmStart]; }
     bool isHtmStop() const { return flags[IsHtmStop]; }
     bool isHtmCancel() const { return flags[IsHtmCancel]; }
+    bool isMagic() const { return flags[IsMagic]; }
 
     bool isInvalid() const { return flags[IsInvalid]; }
 

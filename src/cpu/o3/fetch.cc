@@ -67,6 +67,7 @@
 #include "sim/eventq.hh"
 #include "sim/full_system.hh"
 #include "sim/system.hh"
+#include "debug/HW2.hh"
 
 namespace gem5
 {
@@ -1039,6 +1040,11 @@ Fetch::buildInst(ThreadID tid, StaticInstPtr staticInst,
 
     DPRINTF(Fetch, "[tid:%i] Instruction is: %s\n", tid,
             instruction->staticInst->disassemble(this_pc.instAddr()));
+    
+    if (instruction->isMagic()) {
+        DPRINTF(HW2, "Magic instruction fetched at cycle %lu [tid:%i, sn:%llu]\n",
+                curTick(), tid, seq);
+    }
 
 #if TRACING_ON
     if (trace) {

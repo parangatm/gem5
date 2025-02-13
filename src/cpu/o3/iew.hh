@@ -475,6 +475,9 @@ class IEW
         /** Average number of woken instructions per writeback. */
         statistics::Formula wbFanout;
     } iewStats;
+
+    public:
+      double getblockCyclesFromIEW() const { return iewStats.blockCycles.value(); }
 };
 
 } // namespace o3

@@ -50,6 +50,7 @@
 #include "debug/O3PipeView.hh"
 #include "params/BaseO3CPU.hh"
 #include "sim/full_system.hh"
+#include "debug/HW2.hh"
 
 // clang complains about std::set being overloaded with Packet::set if
 // we open up the entire namespace std
@@ -655,6 +656,11 @@ Decode::decodeInsts(ThreadID tid)
 
         DPRINTF(Decode, "[tid:%i] Processing instruction [sn:%lli] with "
                 "PC %s\n", tid, inst->seqNum, inst->pcState());
+
+        if(inst->isMagic()) {
+            DPRINTF(HW2, "Magic instruction decoded at cycle %lu [tid:%i, sn:%llu]\n",
+                    curTick(), tid, inst->seqNum);
+        }
 
         if (inst->isSquashed()) {
             DPRINTF(Decode, "[tid:%i] Instruction %i with PC %s is "
