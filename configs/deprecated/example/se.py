@@ -134,6 +134,12 @@ parser = argparse.ArgumentParser()
 Options.addCommonOptions(parser)
 Options.addSEOptions(parser)
 
+parser.add_argument(
+    "--rp",
+    type=str,
+    default="LRU",
+    help="Set the replacement policy")
+
 if "--ruby" in sys.argv:
     Ruby.define_options(parser)
 
@@ -220,6 +226,7 @@ if args.elastic_trace_en:
 # frequency.
 for cpu in system.cpu:
     cpu.clk_domain = system.cpu_clk_domain
+    cpu.issueWidth = 8
 
 if ObjectList.is_kvm_cpu(CPUClass) or ObjectList.is_kvm_cpu(FutureClass):
     if buildEnv["USE_X86_ISA"]:

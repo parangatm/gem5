@@ -117,6 +117,16 @@ def config_cache(options, system):
             None,
         )
 
+    replacement_policies = {
+    "LRU": LRURP(),
+    "NMRU": NMRURP(),
+    "NRU": NRURP(),
+    "PLRU": TreePLRURP(),
+    "BRRIP":BRRIPRP()
+    }
+
+    selected_replacement_policy = replacement_policies[options.rp]
+
     # Set the cache line size of the system
     system.cache_line_size = options.cacheline_size
 
@@ -132,7 +142,8 @@ def config_cache(options, system):
         # are not connected using addTwoLevelCacheHierarchy. Use the
         # same clock as the CPUs.
         system.l2 = l2_cache_class(
-            clk_domain=system.cpu_clk_domain, **_get_cache_opts("l2", options)
+            clk_domain=system.cpu_clk_domain, **_get_cache_opts("l2", options),
+            replacement_policy=selected_replacement_policy
         )
 
         system.tol2bus = L2XBar(clk_domain=system.cpu_clk_domain)
@@ -145,7 +156,10 @@ def config_cache(options, system):
     for i in range(options.num_cpus):
         if options.caches:
             icache = icache_class(**_get_cache_opts("l1i", options))
-            dcache = dcache_class(**_get_cache_opts("l1d", options))
+            dcache = dcache_class(**_get_cache_opts("l1d", options), replacement_policy=selected_replacement_policy)
+
+            # icache.replacement_policy = selected_replacement_policy
+            dcache.replacement_policy = selected_replacement_policy
 
             # If we are using ISA.X86 or ISA.RISCV, we set walker caches.
             if ObjectList.cpu_list.get_isa(options.cpu_type) in [
